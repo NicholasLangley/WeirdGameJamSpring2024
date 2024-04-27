@@ -249,7 +249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a1164e86ea065640aa904e4a36bbc2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravity: -1
+  gravity: -10
 --- !u!135 &817268506
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -587,6 +587,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gSource: {fileID: 817268505}
   isPlayer: 1
+  isEnabled: 1
 --- !u!54 &1126884487
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -696,8 +697,8 @@ Transform:
   m_GameObject: {fileID: 1126884485}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 5.31, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalPosition: {x: 0, y: 6.06, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 963194228}
@@ -715,8 +716,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdb3fe73200ee6f4a882cade7f245843, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 1
-  jumpForce: 25
+  moveSpeed: 10
+  jumpForce: 250
   mouseSenseX: 1
   mouseSenseY: 1
   cameraTransform: {fileID: 0}
@@ -761,6 +762,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gSource: {fileID: 817268505}
   isPlayer: 0
+  isEnabled: 1
 --- !u!54 &1886774402
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -868,8 +870,8 @@ Transform:
   m_GameObject: {fileID: 1886774400}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.14192837, y: 5.3, z: 0.43080708}
-  m_LocalScale: {x: 0.14, y: 0.14, z: 0.14}
+  m_LocalPosition: {x: 0.14192837, y: 6.7, z: 0.43080708}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}

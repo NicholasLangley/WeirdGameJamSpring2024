@@ -11,20 +11,29 @@ public class GravityMass : MonoBehaviour
     [SerializeField]
     bool isPlayer = false;
 
+    public bool isEnabled = true;
+
     private void Awake()
     {
-        GetComponent<Rigidbody>().useGravity = false;
+        if (isEnabled) { GetComponent<Rigidbody>().useGravity = false; }
         if (isPlayer) { GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation; }
     }
 
     private void FixedUpdate()
     {
-        gSource.affectMass(transform, isPlayer);
+        if (isEnabled && gSource != null) { gSource.affectMass(transform, isPlayer); }
     }
 
-    private void Update()
+    public void enable()
     {
-        
+        isEnabled = true;
+        GetComponent<Rigidbody>().useGravity = false;
+    }
+
+    public void disable()
+    {
+        isEnabled = true;
+        GetComponent<Rigidbody>().useGravity = true;
     }
 
 }

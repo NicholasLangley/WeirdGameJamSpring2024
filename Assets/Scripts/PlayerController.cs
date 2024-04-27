@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
     public float verticalLookRotation = 0;
 
     Rigidbody rb;
-    bool isGrounded = true;
+    public bool isGrounded = true;
     public LayerMask groundedMask;
 
 
@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviour
         RaycastHit hit;
 
         foreach (Ray ray in rays) {
-            if (Physics.Raycast(ray, out hit, .1f + .02f, groundedMask))
+            if (Physics.Raycast(ray, out hit, 1f + .1f, groundedMask))
             {
                 isGrounded = true;
                 break;
