@@ -48,9 +48,11 @@ public class Snake : MonoBehaviour
     bool won = false;
     bool needToMove = true;
     bool needToMovePupil = true;
+    public bool gameComplete = false;
 
     List<Point> eyeList;
     List<Point> finalSnake;
+
 
     // Start is called before the first frame update
     void Awake()
@@ -280,7 +282,8 @@ public class Snake : MonoBehaviour
             {
                 if (needToMove) { moveTowardsEye(); }
                 else if (needToMovePupil) { movePupil(); }
-                else if (eyeframe < 30){ playEyeAnimation(); }
+                else if (eyeframe < 30) { playEyeAnimation(); }
+                else if(!gameComplete) { gameComplete = true; }
                 time = 0;
             }
         }

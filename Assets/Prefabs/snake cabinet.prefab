@@ -204,6 +204,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   screen: {fileID: 0}
   gameOverScreen: {fileID: 4900000, guid: d21d5c3d4dde8a347bd5f7d7bf404975, type: 3}
+  eyeOpenSheet: {fileID: 2800000, guid: 62bddc38ecbb8c040bfbb4bc6bbe8654, type: 3}
   screenWidth: 32
   screenHeight: 32
   gridSize: 30
