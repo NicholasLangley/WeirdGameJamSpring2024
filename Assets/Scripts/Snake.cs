@@ -18,7 +18,13 @@ enum DIRECTION {UP, RIGHT, DOWN, LEFT }
 
 public class Snake : MonoBehaviour
 {
+    [SerializeField]
     Texture2D screen;
+    public TextAsset gameOverScreen;
+
+    [SerializeField]
+    Texture2D eyeOpenSheet;
+    int eyeframe = 0;
 
     public int screenWidth = 32;
     public int screenHeight = 32;
@@ -40,6 +46,11 @@ public class Snake : MonoBehaviour
     bool started = false;
     bool tailMode = false;
     bool won = false;
+    bool needToMove = true;
+    bool needToMovePupil = true;
+
+    List<Point> eyeList;
+    List<Point> finalSnake;
 
     // Start is called before the first frame update
     void Awake()
@@ -52,6 +63,28 @@ public class Snake : MonoBehaviour
         GetComponent<Renderer>().material.mainTexture = screen;
         walls = new List<Point>();
         createWalls();
+
+        eyeList = new List<Point>();
+
+        eyeList.Add(new Point(17, 18));
+        eyeList.Add(new Point(16, 18));
+        eyeList.Add(new Point(15, 18));
+        eyeList.Add(new Point(14, 18));
+
+        eyeList.Add(new Point(14, 17));
+        eyeList.Add(new Point(14, 16));
+        eyeList.Add(new Point(14, 15));
+
+        eyeList.Add(new Point(14, 14));
+        eyeList.Add(new Point(15, 14));
+        eyeList.Add(new Point(16, 14));
+        eyeList.Add(new Point(17, 14));
+        eyeList.Add(new Point(18, 14));
+
+        eyeList.Add(new Point(18, 15));
+        eyeList.Add(new Point(18, 16));
+        eyeList.Add(new Point(18, 17));
+        eyeList.Add(new Point(18, 18));
     }
 
     void drawBlackScreen()
@@ -67,13 +100,14 @@ public class Snake : MonoBehaviour
 
     void startGame()
     {
+        GetComponent<Renderer>().material.mainTexture = screen;
         time = 0f;
         snake = new LinkedList<Point>();
-        snake.AddLast(new Point (10, 20));
-        snake.AddLast(new Point(10, 19));
-        snake.AddLast(new Point(10, 18));
+        snake.AddLast(new Point (10, 16));
         snake.AddLast(new Point(10, 17));
-        snake.AddLast(new Point(10, 16));
+        snake.AddLast(new Point(10, 18));
+        snake.AddLast(new Point(10, 19));
+        snake.AddLast(new Point(10, 20));
         dir = DIRECTION.UP;
         nextDir = DIRECTION.UP;
         apple = new Point(20, 20);
@@ -101,20 +135,30 @@ public class Snake : MonoBehaviour
     void drawGame()
     {
         drawBlackScreen();
-        foreach (Point p in snake)
+        if (!won)
         {
-            screen.SetPixel(p.X, p.Y, Color.green);
+            foreach (Point p in snake)
+            {
+                screen.SetPixel(p.X, p.Y, Color.green);
+            }
+        }
+        else
+        {
+            foreach (Point p in finalSnake)
+            {
+                screen.SetPixel(p.X, p.Y, Color.green);
+            }
+            if (tailMode == true) { screen.SetPixel(finalSnake[15].X, finalSnake[15].Y, Color.red); }
         }
         foreach (Point w in walls)
         {
             screen.SetPixel(w.X, w.Y, Color.white);
         }
 
-        if (tailMode == true) { screen.SetPixel(snake.First.Value.X, snake.First.Value.Y, Color.red); }
+        if (tailMode == true) { if (!won) { screen.SetPixel(snake.First.Value.X, snake.First.Value.Y, Color.red); } }
         else { screen.SetPixel(apple.X, apple.Y, Color.red); }
 
         screen.Apply();
-        GetComponent<Renderer>().material.mainTexture = screen;
     }
 
     void moveApple()
@@ -133,10 +177,10 @@ public class Snake : MonoBehaviour
     private void moveSnake()
     {
         Point nextHead = snake.Last.Value;
-        if (dir == DIRECTION.UP) { nextHead.Y -= 1; }
-        else if (dir == DIRECTION.DOWN) { nextHead.Y += 1; }
-        else if (dir == DIRECTION.LEFT) { nextHead.X += 1; }
-        else if (dir == DIRECTION.RIGHT) { nextHead.X -= 1; }
+        if (dir == DIRECTION.UP) { nextHead.Y += 1; }
+        else if (dir == DIRECTION.DOWN) { nextHead.Y -= 1; }
+        else if (dir == DIRECTION.LEFT) { nextHead.X -= 1; }
+        else if (dir == DIRECTION.RIGHT) { nextHead.X += 1; }
 
         if (tailMode == true)
         {
@@ -155,17 +199,28 @@ public class Snake : MonoBehaviour
         snake.AddLast(nextHead);
         if (nextHead.X == apple.X && nextHead.Y == apple.Y) { moveApple(); }
         else { snake.RemoveFirst(); }
+
+        drawGame();
     }
 
     void gameOver()
     {
         started = false;
+        screen.LoadImage(gameOverScreen.bytes);
+        screen.Apply();
     }
 
     void win()
     {
         started = false;
         won = true;
+
+        finalSnake = new List<Point>();
+        foreach (Point part in snake)
+        {
+            finalSnake.Add(part);
+        }
+        gameTime = 0.5f;
     }
 
     void enterTailMode()
@@ -180,43 +235,117 @@ public class Snake : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!won)
+        {
+            if ((Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) && dir != DIRECTION.DOWN)
+            {
+                nextDir = DIRECTION.UP;
+            }
+            else if ((Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) && dir != DIRECTION.UP)
+            {
+                nextDir = DIRECTION.DOWN;
+            }
+            else if ((Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) && dir != DIRECTION.RIGHT)
+            {
+                nextDir = DIRECTION.LEFT;
+            }
+            else if ((Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) && dir != DIRECTION.LEFT)
+            {
+                nextDir = DIRECTION.RIGHT;
+            }
 
-        if (Input.GetKeyDown(KeyCode.UpArrow) && dir != DIRECTION.DOWN)
-        {
-            nextDir = DIRECTION.UP;
-        }
-        else if (Input.GetKeyDown(KeyCode.DownArrow) && dir != DIRECTION.UP)
-        {
-            nextDir = DIRECTION.DOWN;
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow) && dir != DIRECTION.RIGHT)
-        {
-            nextDir = DIRECTION.LEFT;
-        }
-        else if(Input.GetKeyDown(KeyCode.RightArrow) && dir != DIRECTION.LEFT)
-        {
-            nextDir = DIRECTION.RIGHT;
-        }
+            if (started)
+            {
+                time += Time.deltaTime;
+                if (time > gameTime)
+                {
+                    dir = nextDir;
+                    moveSnake();
+                    time = 0;
+                }
+            }
 
-        if (started)
-        { 
+            else
+            {
+                if (Input.GetKeyDown(KeyCode.Return))
+                {
+                    startGame();
+                }
+            }
+        }
+        else
+        {
             time += Time.deltaTime;
             if (time > gameTime)
             {
-                dir = nextDir;
-                moveSnake();
-                drawGame();
+                if (needToMove) { moveTowardsEye(); }
+                else if (needToMovePupil) { movePupil(); }
+                else if (eyeframe < 30){ playEyeAnimation(); }
                 time = 0;
             }
         }
 
-        else
+    }
+
+
+    //end game vid logic
+    void moveTowardsEye()
+    {
+        needToMove = false;
+
+        for (int i = 0; i < 16; i++)
         {
-            if (Input.GetKeyDown(KeyCode.Return) && won != true)
+            Point dest = eyeList[i];
+            Point curr = finalSnake[i];
+
+            if(curr.X < dest.X){ curr.X += 1; needToMove = true; }
+            else if (curr.X > dest.X) { curr.X -= 1; needToMove = true; }
+            if (curr.Y < dest.Y) { curr.Y += 1; needToMove = true; }
+            else if (curr.Y > dest.Y) { curr.Y -= 1; needToMove = true; }
+
+            finalSnake[i] = curr;
+        }
+
+        if (!needToMove) { apple.X = finalSnake[15].X; apple.Y = finalSnake[15].Y;gameTime = 0.75f; tailMode = false; }
+        drawGame();
+    }
+
+    void movePupil()
+    {
+        needToMovePupil = false;
+
+        if (apple.X < 16) { apple.X += 1; needToMovePupil = true; }
+        else if (apple.X > 16) { apple.X -= 1; needToMovePupil = true; }
+        else if (apple.Y < 16) { apple.Y += 1; needToMovePupil = true; }
+        else if (apple.Y > 16) { apple.Y -= 1; needToMovePupil = true; }
+
+        
+
+        drawGame();
+
+        if (needToMovePupil == false) { screen = new Texture2D(64, 64); gameTime = 0.5f; screen.filterMode = FilterMode.Point; }
+    }
+
+    void playEyeAnimation()
+    {
+        Color[] spriteSheet = eyeOpenSheet.GetPixels();
+        Color[] frame = new Color[64 * 64];
+
+
+        for(int x = 0; x < 64; x++)
+        {
+            for(int y = 0; y < 64; y++)
             {
-                startGame();
+                frame[x + y * 64] = spriteSheet[x + eyeframe * 64 + y * 64 * 30];
             }
         }
 
+        screen.SetPixels(frame);
+        screen.Apply();
+        GetComponent<Renderer>().material.mainTexture = screen;
+
+
+        eyeframe++;
     }
+
 }
