@@ -43,6 +43,13 @@ public class Cabinet : MonoBehaviour
 
     bool runScript = true;
 
+    public float activationDistance = 2.0f;
+    public bool inRange = false;
+    bool assuming = false;
+    Vector3 playerStart;
+    Vector3 playerEnd;
+    float assumeTime = 1.0f;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -58,6 +65,43 @@ public class Cabinet : MonoBehaviour
             time += Time.deltaTime;
             playEye();
         }
+        else if (assuming)
+        {
+            assumeThePosition();
+        }
+        else
+        {
+            if((Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.F)) && !snakeGame.started && !assuming)
+            {
+                RaycastHit hit;
+                inRange = Physics.Raycast(playerCamera.transform.position, playerCamera.transform.TransformDirection(Vector3.forward), out hit, activationDistance);
+                if(inRange)
+                {
+                    player.GetComponent<PlayerController>().setLookEnabled(false);
+                    player.GetComponent<PlayerController>().setMoveEnabled(false);
+
+                    playerStart = player.transform.position;
+
+                    playerEnd = transform.position + transform.forward;
+                    playerEnd.y = player.transform.position.y;
+
+
+                    assuming = true;                  
+                }
+            }
+            
+        }
+    }
+
+    void assumeThePosition()
+    {
+        time += Time.deltaTime;
+        player.transform.position = Vector3.Lerp(playerStart, playerEnd, time / assumeTime);
+        player.transform.LookAt(new Vector3 (eye.transform.position.x, player.transform.position.y, eye.transform.position.z));
+        playerCamera.transform.LookAt(new Vector3(eye.transform.position.x, eye.transform.position.y, eye.transform.position.z));
+
+
+        if (time >= assumeTime) { snakeGame.startGame(); time = 0; assuming = false; }
     }
 
     void playEye()
@@ -104,6 +148,9 @@ public class Cabinet : MonoBehaviour
                 player.GetComponent<PlayerController>().jumpForce = 2.5f;
                 player.GetComponent<PlayerController>().jumpDist = 0.011f;
                 playerCamera.transform.localEulerAngles = Vector3.left * -80f;
+
+                player.GetComponent<PlayerController>().setLookEnabled(true);
+                player.GetComponent<PlayerController>().setMoveEnabled(true);
 
 
                 eye.transform.localPosition = new Vector3(eye.transform.localPosition.x, eye.transform.localPosition.y, 0.25f);

@@ -27,6 +27,9 @@ public class PlayerController : MonoBehaviour
     public bool isGrounded = true;
     public LayerMask groundedMask;
 
+    bool lookEnabled = true;
+    bool moveEnabled = true;
+
 
     // Start is called before the first frame update
     void Start()
@@ -38,36 +41,43 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Rotate(Vector3.up * Input.GetAxisRaw("Mouse X") * mouseSenseX);
-        verticalLookRotation += Input.GetAxisRaw("Mouse Y") * mouseSenseY;
-        verticalLookRotation = Mathf.Clamp(verticalLookRotation, minVertRotation, maxVertRotation);
-        cameraTransform.localEulerAngles = Vector3.left * verticalLookRotation;
-
-        Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-        float finalSpeed = isGrounded ? moveSpeed : moveSpeed * 0.8f;
-        Vector3 targetMovement = moveDir * finalSpeed;
-        moveAmount = Vector3.SmoothDamp(moveAmount, targetMovement, ref smoothMoveVelocity, .15f);
-
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (lookEnabled)
         {
-            rb.AddForce(transform.up * jumpForce);
+            transform.Rotate(Vector3.up * Input.GetAxisRaw("Mouse X") * mouseSenseX);
+            verticalLookRotation += Input.GetAxisRaw("Mouse Y") * mouseSenseY;
+            verticalLookRotation = Mathf.Clamp(verticalLookRotation, minVertRotation, maxVertRotation);
+            cameraTransform.localEulerAngles = Vector3.left * verticalLookRotation;
         }
 
-        isGrounded = false;
-        Ray[] rays = new Ray[5];
-        rays[0] = new Ray(transform.position, -transform.up);
-        rays[1] = new Ray(transform.position + 0.03f * transform.forward, -transform.up);
-        rays[2] = new Ray(transform.position + 0.03f * -transform.forward, -transform.up);
-        rays[3] = new Ray(transform.position + 0.03f * transform.right, -transform.up);
-        rays[4] = new Ray(transform.position + 0.03f * -transform.right, -transform.up);
+        if (moveEnabled)
+        {
+            Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+            float finalSpeed = isGrounded ? moveSpeed : moveSpeed * 0.8f;
+            Vector3 targetMovement = moveDir * finalSpeed;
+            moveAmount = Vector3.SmoothDamp(moveAmount, targetMovement, ref smoothMoveVelocity, .15f);
 
-        RaycastHit hit;
-
-        foreach (Ray ray in rays) {
-            if (Physics.Raycast(ray, out hit, jumpDist, groundedMask))
+            if (Input.GetButtonDown("Jump") && isGrounded)
             {
-                isGrounded = true;
-                break;
+                rb.AddForce(transform.up * jumpForce);
+            }
+
+            isGrounded = false;
+            Ray[] rays = new Ray[5];
+            rays[0] = new Ray(transform.position, -transform.up);
+            rays[1] = new Ray(transform.position + 0.03f * transform.forward, -transform.up);
+            rays[2] = new Ray(transform.position + 0.03f * -transform.forward, -transform.up);
+            rays[3] = new Ray(transform.position + 0.03f * transform.right, -transform.up);
+            rays[4] = new Ray(transform.position + 0.03f * -transform.right, -transform.up);
+
+            RaycastHit hit;
+
+            foreach (Ray ray in rays)
+            {
+                if (Physics.Raycast(ray, out hit, jumpDist, groundedMask))
+                {
+                    isGrounded = true;
+                    break;
+                }
             }
         }
 
@@ -75,6 +85,19 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb.MovePosition(transform.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
+        if (moveEnabled)
+        {
+            rb.MovePosition(transform.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
+        }
+    }
+
+    public void setLookEnabled(bool set)
+    {
+        lookEnabled = set;
+    }
+
+    public void setMoveEnabled(bool set)
+    {
+        moveEnabled = set;
     }
 }

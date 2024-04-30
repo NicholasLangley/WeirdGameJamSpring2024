@@ -43,7 +43,8 @@ public class Snake : MonoBehaviour
     [SerializeField]
     float gameTime = 0.5f;
 
-    bool started = false;
+    public bool started = false;
+    bool gameLost = false;
     bool tailMode = false;
     bool won = false;
     bool needToMove = true;
@@ -100,7 +101,7 @@ public class Snake : MonoBehaviour
         }
     }
 
-    void startGame()
+    public void startGame()
     {
         GetComponent<Renderer>().material.mainTexture = screen;
         time = 0f;
@@ -117,6 +118,7 @@ public class Snake : MonoBehaviour
         moveApple();
         drawGame();
         started = true;
+        gameLost = false;
         tailMode = false;
         won = false;
     }
@@ -208,6 +210,7 @@ public class Snake : MonoBehaviour
     void gameOver()
     {
         started = false;
+        gameLost = true;
         screen.LoadImage(gameOverScreen.bytes);
         screen.Apply();
     }
@@ -267,9 +270,9 @@ public class Snake : MonoBehaviour
                 }
             }
 
-            else
+            else if(gameLost)
             {
-                if (Input.GetKeyDown(KeyCode.Return))
+                if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.F))
                 {
                     startGame();
                 }
