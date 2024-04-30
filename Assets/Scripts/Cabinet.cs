@@ -40,10 +40,13 @@ public class Cabinet : MonoBehaviour
     GameObject arcade;
     [SerializeField]
     GameObject holeCover;
+    [SerializeField]
+    GameObject cabinetModel;
 
     bool runScript = true;
 
     public float activationDistance = 2.0f;
+    public LayerMask cabMask;
     public bool inRange = false;
     bool assuming = false;
     Vector3 playerStart;
@@ -74,7 +77,7 @@ public class Cabinet : MonoBehaviour
             if((Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.F)) && !snakeGame.started && !assuming)
             {
                 RaycastHit hit;
-                inRange = Physics.Raycast(playerCamera.transform.position, playerCamera.transform.TransformDirection(Vector3.forward), out hit, activationDistance);
+                inRange = Physics.Raycast(playerCamera.transform.position, playerCamera.transform.TransformDirection(Vector3.forward), out hit, activationDistance, cabMask);
                 if(inRange)
                 {
                     player.GetComponent<PlayerController>().setLookEnabled(false);
@@ -152,9 +155,10 @@ public class Cabinet : MonoBehaviour
                 player.GetComponent<PlayerController>().setLookEnabled(true);
                 player.GetComponent<PlayerController>().setMoveEnabled(true);
 
-
                 eye.transform.localPosition = new Vector3(eye.transform.localPosition.x, eye.transform.localPosition.y, 0.25f);
                 player.transform.position = new Vector3(eye.transform.position.x, eye.transform.position.y + 0.25f, eye.transform.position.z);
+
+                player.GetComponent<PlayerController>().lookUp();
 
                 GameObject.Destroy(holeCover);
 
@@ -179,7 +183,7 @@ public class Cabinet : MonoBehaviour
             {
                 eye.layer = LayerMask.NameToLayer("Default");
                 eye.GetComponent<SphereCollider>().enabled = false;
-                player.GetComponent<GravityMass>().disable();
+                GameObject.Destroy(cabinetModel);
             }
             if (time > preSwallowTime + pupilLerpTime + 0.5f)
             {

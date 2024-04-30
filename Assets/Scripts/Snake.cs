@@ -54,6 +54,15 @@ public class Snake : MonoBehaviour
     List<Point> eyeList;
     List<Point> finalSnake;
 
+    [SerializeField]
+    AudioSource collectSound;
+    [SerializeField]
+    AudioSource hum;
+    [SerializeField]
+    AudioSource startup;
+    [SerializeField]
+    AudioSource death;
+
 
     // Start is called before the first frame update
     void Awake()
@@ -121,6 +130,7 @@ public class Snake : MonoBehaviour
         gameLost = false;
         tailMode = false;
         won = false;
+        startup.Play();
     }
 
     void createWalls()
@@ -188,7 +198,7 @@ public class Snake : MonoBehaviour
 
         if (tailMode == true)
         {
-            if (nextHead.X == snake.First.Value.X && nextHead.Y == snake.First.Value.Y) { win(); return; }
+            if (nextHead.X == snake.First.Value.X && nextHead.Y == snake.First.Value.Y) { collectSound.Play(); win(); return; }
         }
 
         foreach(Point body in snake)
@@ -201,7 +211,7 @@ public class Snake : MonoBehaviour
         }
 
         snake.AddLast(nextHead);
-        if (nextHead.X == apple.X && nextHead.Y == apple.Y) { moveApple(); }
+        if (nextHead.X == apple.X && nextHead.Y == apple.Y) { moveApple(); collectSound.Play(); }
         else { snake.RemoveFirst(); }
 
         drawGame();
@@ -213,6 +223,9 @@ public class Snake : MonoBehaviour
         gameLost = true;
         screen.LoadImage(gameOverScreen.bytes);
         screen.Apply();
+
+        hum.Stop();
+        death.Play();
     }
 
     void win()
@@ -234,7 +247,7 @@ public class Snake : MonoBehaviour
         apple.X = 0; 
         apple.Y = 0;
 
-        //play different sounds I guess
+        hum.Play();
     }
 
     // Update is called once per frame

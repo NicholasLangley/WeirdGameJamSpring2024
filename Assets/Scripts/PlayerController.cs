@@ -35,6 +35,8 @@ public class PlayerController : MonoBehaviour
     public AudioSource metalPipeAtHome;
     [SerializeField]
     GameObject bluescreen;
+    [SerializeField]
+    GameObject bossBar;
 
     [SerializeField]
     ForkKing James;
@@ -44,6 +46,7 @@ public class PlayerController : MonoBehaviour
     ForkKing SanFrancisco;
     [SerializeField]
     ForkKing Arson;
+
 
     // Start is called before the first frame update
     void Start()
@@ -116,6 +119,11 @@ public class PlayerController : MonoBehaviour
         moveEnabled = set;
     }
 
+    public void lookUp()
+    {
+        verticalLookRotation = maxVertRotation;
+    }
+
     public void Damage()
     {
         health--;
@@ -135,10 +143,11 @@ public class PlayerController : MonoBehaviour
             James.gameObject.SetActive(false);
             Anya.gameObject.SetActive(false);
             SanFrancisco.gameObject.SetActive(false);
-            Arson.gameObject.SetActive(false);
+            GameObject.Destroy(Arson.gameObject);
             setLookEnabled(false);
             setMoveEnabled(false);
             bluescreen.SetActive(true);
+            bossBar.SetActive(false);
             return;
         }
 

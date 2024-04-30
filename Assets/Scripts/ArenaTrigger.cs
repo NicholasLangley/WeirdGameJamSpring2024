@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ArenaTrigger : MonoBehaviour
 {
+
+    [SerializeField]
+    GameObject arcade;
     private void OnTriggerEnter(Collider other)
     {
         other.gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
@@ -13,5 +16,7 @@ public class ArenaTrigger : MonoBehaviour
         other.gameObject.GetComponent<PlayerController>().moveSpeed = 10f;
         other.gameObject.GetComponent<PlayerController>().jumpForce = 250f;
         other.gameObject.GetComponent<PlayerController>().jumpDist = 1.1f;
+
+        GameObject.Destroy(arcade);
     }
 }

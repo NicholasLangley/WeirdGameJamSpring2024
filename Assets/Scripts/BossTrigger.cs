@@ -16,6 +16,12 @@ public class BossTrigger : MonoBehaviour
     [SerializeField]
     GameObject player;
 
+    [SerializeField]
+    AudioSource music;
+
+    [SerializeField]
+    GameObject bossBar;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == player)
@@ -24,6 +30,8 @@ public class BossTrigger : MonoBehaviour
             Anya.activate();
             SanFrancisco.activate();
             Arson.activate();
+            music.Play();
+            bossBar.SetActive(true);
         }
     }
 }
