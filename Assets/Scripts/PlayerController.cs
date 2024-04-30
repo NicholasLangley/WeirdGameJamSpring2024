@@ -30,6 +30,10 @@ public class PlayerController : MonoBehaviour
     bool lookEnabled = true;
     bool moveEnabled = true;
 
+    public int health = 100;
+    public AudioSource metalPipe;
+    public AudioSource metalPipeAtHome;
+
 
     // Start is called before the first frame update
     void Start()
@@ -99,5 +103,25 @@ public class PlayerController : MonoBehaviour
     public void setMoveEnabled(bool set)
     {
         moveEnabled = set;
+    }
+
+    public void Damage()
+    {
+        health--;
+
+        int sound = Random.Range(0, 5);
+        if(sound == 0)
+        {
+            metalPipeAtHome.Play();
+        }
+        else
+        {
+            metalPipe.Play();
+        }
+
+        if (health <= 0)
+        {
+            Debug.Log("GameOver!");
+        }
     }
 }
