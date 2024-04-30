@@ -23,12 +23,8 @@ public class ForkKing : MonoBehaviour
         if(active)
         {
             transform.LookAt(player.transform.position);
-            transform.position = Vector3.MoveTowards(transform.position, player.transform.position, speed); 
-        }
-
-        if(Input.GetKeyDown(KeyCode.Return))
-        {
-            active = true;
+            transform.position = Vector3.MoveTowards(transform.position, player.transform.position, speed);
+            transform.Rotate(0, 90, 0);
         }
     }
 
@@ -43,15 +39,26 @@ public class ForkKing : MonoBehaviour
 
     void Teleport()
     {
-        float x = transform.position.x + Random.Range(200f, 400f);
-        float z = transform.position.z + Random.Range(200f, 400f);
+        float x = transform.position.x + Random.Range(200f, 500f);
+        float z = transform.position.z + Random.Range(200f, 500f);
 
         int neg = Random.Range(0, 2);
-        x *= -1 * neg;
+        if(neg == 0)
+        {
+            x *= -1f;
+        }
 
         neg = Random.Range(0, 2);
-        z *= -1 * neg;
+        if (neg == 0)
+        {
+            z *= -1f;
+        }
 
         transform.position = new Vector3(x, transform.position.y, z);
+    }
+
+    public void activate()
+    {
+        active = true;
     }
 }

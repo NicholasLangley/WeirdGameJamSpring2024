@@ -33,13 +33,24 @@ public class PlayerController : MonoBehaviour
     public int health = 100;
     public AudioSource metalPipe;
     public AudioSource metalPipeAtHome;
+    [SerializeField]
+    GameObject bluescreen;
 
+    [SerializeField]
+    ForkKing James;
+    [SerializeField]
+    ForkKing Anya;
+    [SerializeField]
+    ForkKing SanFrancisco;
+    [SerializeField]
+    ForkKing Arson;
 
     // Start is called before the first frame update
     void Start()
     {
         cameraTransform = Camera.main.transform;
         rb = GetComponent<Rigidbody>();
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
@@ -121,7 +132,15 @@ public class PlayerController : MonoBehaviour
 
         if (health <= 0)
         {
-            Debug.Log("GameOver!");
+            James.gameObject.SetActive(false);
+            Anya.gameObject.SetActive(false);
+            SanFrancisco.gameObject.SetActive(false);
+            Arson.gameObject.SetActive(false);
+            setLookEnabled(false);
+            setMoveEnabled(false);
+            bluescreen.SetActive(true);
+            return;
         }
+
     }
 }
