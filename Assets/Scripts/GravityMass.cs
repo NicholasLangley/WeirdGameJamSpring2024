@@ -34,6 +34,12 @@ public class GravityMass : MonoBehaviour
     {
         isEnabled = true;
         GetComponent<Rigidbody>().useGravity = true;
+        //if (isPlayer) { GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None; }
+    }
+
+    public void setSource(GravitySource newSource)
+    {
+        gSource = newSource;
     }
 
 }

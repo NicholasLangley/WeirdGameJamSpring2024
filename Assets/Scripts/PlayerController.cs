@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 
     public float moveSpeed = 10f;
     public float jumpForce = 10f;
+    public float jumpDist = 1.1f;
 
     public float mouseSenseX = 250f;
     public float mouseSenseY = 250f;
@@ -63,7 +64,7 @@ public class PlayerController : MonoBehaviour
         RaycastHit hit;
 
         foreach (Ray ray in rays) {
-            if (Physics.Raycast(ray, out hit, 1f + .1f, groundedMask))
+            if (Physics.Raycast(ray, out hit, jumpDist, groundedMask))
             {
                 isGrounded = true;
                 break;
